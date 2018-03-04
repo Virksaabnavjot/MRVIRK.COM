@@ -1,0 +1,6 @@
+ErrorDocument 404 /404.html
+
+RewriteEngine On
+RewriteCond %{SERVER_PORT} 80
+RewriteCond %{REQUEST_URI} /qr
+RewriteRule ^(.*)$ https://mrvirk.com/qr/$1 [R,L]

@@ -1,1 +1,31 @@
+
+RewriteOptions inherit
 ErrorDocument 404 /404.html
+
+RewriteEngine On 
+RewriteCond %{SERVER_PORT} 80 
+RewriteCond %{REQUEST_URI} /
+RewriteRule ^(.*)$ https://mrvirk.com/$1 [R,L]
+
+php_value always_populate_raw_post_data -1
+RewriteCond %{HTTP_HOST} ^mrvirk\.com$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.mrvirk\.com$
+RewriteCond %{REQUEST_URI} !^/[0-9]+\..+\.cpaneldcv$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^thesikh$ "https\:\/\/thesikh\.mrvirk\.com\/" [R=301,L]
+RewriteCond %{HTTP_HOST} ^mrvirk\.com$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.mrvirk\.com$
+RewriteCond %{REQUEST_URI} !^/[0-9]+\..+\.cpaneldcv$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^an$ "https\:\/\/mrvirk\.com\/analytics\/piwik" [R=301,L]
+RewriteCond %{HTTP_HOST} ^mrvirk\.com$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.mrvirk\.com$
+RewriteCond %{REQUEST_URI} !^/[0-9]+\..+\.cpaneldcv$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^business$ "https\:\/\/business\.mrvirk\.com\/" [R=301,L]
+RewriteCond %{HTTP_HOST} ^mrvirk\.com$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.mrvirk\.com$
+RewriteCond %{REQUEST_URI} !^/[0-9]+\..+\.cpaneldcv$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^webdesign\/$ "https\:\/\/makemysite\.ie\/" [R=301,L]
+

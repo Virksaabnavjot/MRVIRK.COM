@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>OOO Assistant</title>
+		<meta name="description" content="OOO Assistant">
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="google-signin-scope" content="https://www.googleapis.com/auth/gmail.settings.basic https://www.googleapis.com/auth/calendar">
+		<meta name="google-signin-client_id" content="454866516925-dru3q8qe60iach4t1lr2seks9lmboid7.apps.googleusercontent.com">
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+		<link rel="stylesheet" href="css/styles.css?v=1.0">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+	</head>
+	<body>
+		<nav class="navbar navbar-light bg-light">
+			<a class="navbar-brand" href="#">
+			<img src="img/ooo.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
+			OOO Assistant
+			</a>
+		</nav>
+		<div class="container-fluid">
+			<div class="alert alert-info sticky-top" role="alert" id="alertbox" style="display: none;">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				  <span aria-hidden="true">&times;</span>
+				</button>
+				<span id="alertmsg"></span>
+			</div>
+			<div class="row">
+				<div class="col-sm">
+					<div class="jumbotron rounded-0 m-2">
+						<p class="lead">Welcome to Out of Office Assistant!</p>
+						<hr class="my-4">
+						<p>Use the form on the right to set up your out of office notifications across multiple platforms. The default section is mandatory, along with the Gmail set up. The rest are optional. </p>
+						<p>To get started, sign in with your Google account:</p>
+						<div id="div_google_signin" class="g-signin2" data-onsuccess="googleSignIn"></div>
+						<a id="a_slack_oauth" style="display: none;" href="https://slack.com/oauth/authorize?scope=dnd:read,dnd:write,users.profile:read,users.profile:write&client_id=2183958609.299963905569">
+						<img src="https://api.slack.com/img/sign_in_with_slack.png" />
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm">
+					<div class="card rounded-0 m-2" id="gmail-cur-details">
+						<div class="card-body">
+							<h5 class="card-title">Gmail Auto Reply</h5>
+							<p>Use this form to set up your Gmail holiday response. Your current settings are listed below.</p>
+							<!-- <p id="gmail-cur-json"></p> -->
+							<img id="gmail-cur-loading" style="display: none;" src="img/loading.gif">
+							<table class="table">
+								<tbody>
+									<tr>
+										<th scope="row">Enabled</th>
+										<td>
+											<div class="form-check">
+												<input class="form-check-input" type="radio" name="gmail-cur-response-radio" id="gmail-cur-enabled" value="enabled">
+												<label class="form-check-label" for="gmail-cur-enabled">
+													On
+												</label>
+											</div>
+											<div class="form-check">
+												<input class="form-check-input" type="radio" name="gmail-cur-response-radio" id="gmail-cur-disabled" value="disabled">
+												<label class="form-check-label" for="gmail-cur-disabled">
+													Off
+												</label>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">Subject</th>
+										<td>
+											<input type="text" class="form-control" id="gmail-cur-subject">
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">Response</th>
+										<td>
+											<div class="form-group">
+												<textarea class="form-control" id="gmail-cur-response" rows="5"></textarea>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">Restrictions</th>
+										<td>
+											<div class="form-check">
+											  	<input class="form-check-input" type="checkbox" value="" id="gmail-cur-restrictcontacts">
+											  	<label class="form-check-label" for="gmail-cur-restrictcontacts">
+											    	Only send a response to people in my Contacts
+											  	</label>
+											</div>
+											<div class="form-check">
+											  	<input class="form-check-input" type="checkbox" value="" id="gmail-cur-restrictdomain">
+											  	<label class="form-check-label" for="gmail-cur-restrictdomain">
+ 													Only send a response to people in Oath Enterprise
+											  	</label>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">Start</th>
+										<td>
+											<div class="form-group">
+												<div class="input-group date" id="gmail-cur-start" data-target-input="nearest">
+													<input id="gmail-cur-start-input" type="text" class="form-control datetimepicker-input" data-target="#gmail-cur-start"/>
+													<div class="input-group-append" data-target="#gmail-cur-start" data-toggle="datetimepicker">
+														<div class="input-group-text"><img src="img/icon-svg/calendar.svg"></div>
+													</div>
+												</div>
+											</div>
+											<span id="gmail-cur-start-test"></span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">End</th>
+										<td>
+											<div class="form-group">
+												<div class="input-group date" id="gmail-cur-end" data-target-input="nearest">
+													<input id="gmail-cur-end-input" type="text" class="form-control datetimepicker-input" data-target="#gmail-cur-end"/>
+													<div class="input-group-append" data-target="#gmail-cur-end" data-toggle="datetimepicker">
+														<div class="input-group-text"><img src="img/icon-svg/calendar.svg"></div>
+													</div>
+												</div>
+											</div>
+											<span id="gmail-cur-end-test"></span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<button class="btn btn-primary m-2" id="gmail-update">Update Gmail OOO</button>
+					</div>
+				</div>
+				<div class="col-sm">
+					<div class="card rounded-0 m-2" style="display: none;" id="gcal-cur-details" >
+						<div class="card-body">
+							<h5 class="card-title">Google Calendar</h5>
+							<p>Use this form to add a blocking event to your calendars listed below</p>
+
+							<h6>List of calendars:</h6>
+							<img id="gcal-cur-cals-loading" style="display: none;" src="img/loading.gif">
+							<div id="gcal-cur-cals">
+							</div>
+
+							<h6>Event details:</h6>
+							<div class="input-group mb-3">
+							  	<div class="input-group-prepend">
+							    	<span class="input-group-text" id="gcal-event-name-label">Event name</span>
+							  	</div>
+							  	<input type="text" class="form-control" placeholder="Event name" aria-label="Event name" aria-describedby="gcal-event-name-label" id="gcal-event-name">
+							</div>
+
+							<h6>Event visibility:</h6>
+							<div class="form-check">
+							  <input class="form-check-input" type="radio" name="visibility" id="gcal-vis-default" value="default" checked>
+							  <label class="form-check-label" for="gcal-vis-default">
+							    Calendar default
+							  </label>
+							</div>
+							<div class="form-check">
+							  <input class="form-check-input" type="radio" name="visibility" id="gcal-vis-public" value="public">
+							  <label class="form-check-label" for="gcal-vis-public">
+							    Public
+							  </label>
+							</div>
+							<div class="form-check disabled">
+							  <input class="form-check-input" type="radio" name="visibility" id="gcal-vis-private" value="private">
+							  <label class="form-check-label" for="gcal-vis-private">
+							    Private
+							  </label>
+							</div>
+
+
+							<!-- <p>List of calendar events</p>
+							<img id="gcal-cur-events-loading" style="display: none;" src="img/loading.gif">
+							<ul class="list-group" id="gcal-cur-events">
+							</ul> -->
+
+							
+						</div>
+						<button class="btn btn-primary m-2" id="gcal-update">Update GCal OOO</button>
+					</div>
+				</div>
+				<div class="col-sm">
+					<div class="card rounded-0 m-2" style="display: none;" id="slack-cur-details">
+						<div class="card-body">
+							<h5 class="card-title">Slack</h5>
+							<img id="slack-status-loading" style="display: none;" src="img/loading.gif">
+							<!-- <p><span id="slack-cur-status-json"></span></p> -->
+							<img id="slack-dnd-loading" style="display: none;" src="img/loading.gif">
+							<!-- <p><span id="slack-cur-dnd-json"></span></p> -->
+<!-- 							<p class="card-text">Status text: <strong id="slack-cur-status"></strong></p>
+ -->							<div class="input-group mb-3">
+							  	<div class="input-group-prepend">
+							    	<span class="input-group-text" id="slack-cur-status-label">Status</span>
+							  	</div>
+							  	<input type="text" class="form-control" placeholder="Status" aria-label="Status" aria-describedby="slack-cur-status-label" id="slack-cur-status">
+							</div>
+							<div class="input-group mb-3">
+							  	<div class="input-group-prepend">
+							    	<span class="input-group-text" id="slack-cur-emoji-label">Emoji</span>
+							  	</div>
+							  	<input type="text" class="form-control" placeholder="Emoji" aria-label="Emoji" aria-describedby="slack-cur-emoji-label" id="slack-cur-emoji">
+							</div>
+							<div class="input-group mb-3">
+							  	<div class="input-group-prepend">
+							    	<span class="input-group-text" id="slack-dnd-status-label">DND Status</span>
+							  	</div>
+							  	<input type="text" class="form-control" placeholder="DND Status" aria-label="DND Status" aria-describedby="slack-dnd-status-label" id="slack-dnd-status">
+							</div>
+							<div class="input-group mb-3">
+							  	<div class="input-group-prepend">
+							    	<span class="input-group-text" id="slack-dnd-snooze-label">DND Snooze</span>
+							  	</div>
+							  	<input type="text" class="form-control" placeholder="DND Snooze" aria-label="DND Snooze" aria-describedby="slack-dnd-snooze-label" id="slack-dnd-snooze">
+							</div>
+							<!-- <p class="card-text">Status emoji: <strong id="slack-cur-emoji"></strong></p>
+							<p class="card-text">DND enabled: <strong id="slack-dnd-status"></strong></p>
+							<p class="card-text">DND snooze enabled: <strong id="slack-dnd-snooze"></strong></p> -->
+						</div>
+						<button class="btn btn-primary m-2" id="slack-update">Update Slack OOO</button>
+					</div>
+				</div>
+			</div>
+			<!-- <div class="col-sm">
+				<div id="accordion">
+					<div class="card rounded-0 m-2">
+						<div class="card-header" id="default-header">
+							<h5 class="mb-0">
+								<button class="btn btn-link" data-toggle="collapse" data-target="#default-card" aria-expanded="true" aria-controls="default-card">
+								DEFAULT
+								</button>
+							</h5>
+						</div>
+						<div id="default-card" class="collapse show" aria-labelledby="default-header" data-parent="#accordion">
+							<div class="card-body">
+								<div class="form-group">
+									<div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+										<div class="input-group-prepend">
+											<span class="input-group-text">Start date:</span>
+										</div>
+										<input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
+										<div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+											<div class="input-group-text"><img src="img/icon-svg/calendar.svg"></div>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+										<div class="input-group-prepend">
+											<span class="input-group-text">End date:</span>
+										</div>
+										<input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker2"/>
+										<div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+											<div class="input-group-text"><img src="img/icon-svg/calendar.svg"></div>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="exampleFormControlTextarea1">Default Response</label>
+									<textarea class="form-control" id="exampleFormControlTextarea1" rows="3">Hi, &#13;&#10;I'm OOO, please expect a delay in my response.&#13;&#10;For urgent queries, please contact ...&#13;&#10;Thanks, &#13;&#10;Your Name
+									</textarea>
+								</div>
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<span class="input-group-text">Default Cover</span>
+									</div>
+									<input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card rounded-0 m-2">
+					<div class="card-header" id="gmail-header">
+						<h5 class="mb-0">
+							<button class="btn btn-link" data-toggle="collapse" data-target="#gmail-card" aria-expanded="false" aria-controls="gmail-card">
+							GMAIL
+							</button>
+						</h5>
+					</div>
+					<div id="gmail-card" class="collapse" aria-labelledby="gmail-header" data-parent="#accordion">
+						<div class="card-body">
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+								<label class="form-check-label" for="defaultCheck1">
+								Use default response?
+								</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+								<label class="form-check-label" for="defaultCheck1">
+								Use default cover?
+								</label>
+							</div>
+							<div class="form-group">
+								<label for="exampleFormControlTextarea1">Custom Response</label>
+								<textarea class="form-control" id="exampleFormControlTextarea1" rows="3">Hi, &#13;&#10;I'm OOO, please expect a delay in my response.&#13;&#10;For urgent queries, please contact ...&#13;&#10;Thanks, &#13;&#10;Your Name
+								</textarea>
+							</div>
+							<div class="input-group mb-3">
+								<div class="input-group-prepend">
+									<span class="input-group-text">Custom Cover</span>
+								</div>
+								<input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card rounded-0 m-2">
+					<div class="card-header" id="cal-header">
+						<h5 class="mb-0">
+							<button class="btn btn-link collapsed" data-toggle="collapse" data-target="#cal-card" aria-expanded="false" aria-controls="cal-card">
+							GOOGLE CALENDAR
+							</button>
+						</h5>
+					</div>
+					<div id="cal-card" class="collapse" aria-labelledby="cal-header" data-parent="#accordion">
+						<div class="card-body">
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+								<label class="form-check-label" for="defaultCheck1">
+								Set up OOO for Google Calendar?
+								</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+								<label class="form-check-label" for="defaultCheck1">
+								Block out calendar?
+								</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+								<label class="form-check-label" for="defaultCheck1">
+								Decline all meetings?
+								</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+								<label class="form-check-label" for="defaultCheck1">
+								Use default response?
+								</label>
+							</div>
+							<div class="form-group">
+								<label for="exampleFormControlTextarea1">Custom Response</label>
+								<textarea class="form-control" id="exampleFormControlTextarea1" rows="3">Hi, &#13;&#10;I'm OOO, please expect a delay in my response.&#13;&#10;For urgent queries, please contact ...&#13;&#10;Thanks, &#13;&#10;Your Name
+								</textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card rounded-0 m-2">
+					<div class="card-header" id="slack-header">
+						<h5 class="mb-0">
+							<button class="btn btn-link collapsed" data-toggle="collapse" data-target="#slack-card" aria-expanded="false" aria-controls="slack-card">
+							SLACK
+							</button>
+						</h5>
+					</div>
+					<div id="slack-card" class="collapse" aria-labelledby="ard-header" data-parent="#accordion">
+						<div class="card-body">
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+								<label class="form-check-label" for="defaultCheck1">
+								Set up OOO for Slack?
+								</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+								<label class="form-check-label" for="defaultCheck1">
+								Set status?
+								</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+								<label class="form-check-label" for="defaultCheck1">
+								Set "Do Not Disturb"?
+								</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+								<label class="form-check-label" for="defaultCheck1">
+								Use default response?
+								</label>
+							</div>
+							<div class="form-group">
+								<label for="exampleFormControlTextarea1">Custom Response</label>
+								<textarea class="form-control" id="exampleFormControlTextarea1" rows="3">Hi, &#13;&#10;I'm OOO, please expect a delay in my response.&#13;&#10;For urgent queries, please contact ...&#13;&#10;Thanks, &#13;&#10;Your Name
+								</textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+				<button type="submit" class="btn btn-primary m-2">Set OOO</button>
+			</div>-->
+		</div> 
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+		<script src="js/moment.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+		<script src="js/scripts.js"></script>
+	</body>
+</html>
+
